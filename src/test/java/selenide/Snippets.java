@@ -20,51 +20,52 @@ public class Snippets {
     open("https://google.com");
     open("/customer/orders");     // -Dselenide.baseUrl=http://123.23.23.1
     open("/", AuthenticationType.BASIC,
-            new BasicAuthCredentials("", "user", "password"));
+            new BasicAuthCredentials("", "user", "password")); // авторизация на сайте, basic
 
-    Selenide.back();
-    Selenide.refresh();
+    Selenide.back(); //кнопка назад в браузере
+    Selenide.refresh(); //оюновить страницу в браузере
 
     Selenide.clearBrowserCookies();
     Selenide.clearBrowserLocalStorage();
     executeJavaScript("sessionStorage.clear();"); // no Selenide command for this yet
 
-    Selenide.confirm(); // OK in alert dialogs
-    Selenide.dismiss(); // Cancel in alert dialogs
+    Selenide.confirm(); // OK in alert dialogs по типу как Basic авторизация
+    Selenide.dismiss(); // Cancel in alert dialogs по типу как Basic авторизация
 
-    Selenide.closeWindow(); // close active tab
-    Selenide.closeWebDriver(); // close browser completely
+    Selenide.closeWindow(); // close active tab закрывает текущую вкладку
+    Selenide.closeWebDriver(); // close browser completely закрывает весь браузер
 
-    Selenide.switchTo().frame("new");
+    Selenide.switchTo().frame("ID или класс frame"); // и дальше искать внуть это фрейма
     Selenide.switchTo().defaultContent(); // return from frame back to the main DOM
 
-    Selenide.switchTo().window("The Internet");
-
+    Selenide.switchTo().window("The Internet"); //можно по индекс первая вкладка 0 и тд
+    
+// созадние куки
     var cookie = new Cookie("foo", "bar");
     WebDriverRunner.getWebDriver().manage().addCookie(cookie);
-
+// иногда после этого еще нужно сделать  Selenide.refresh();
 
   }
 
   void selectors_examples() {
     $("div").click();
-    element("div").click();
+    element("div").click(); // элемент синоним $ 
 
     $("div", 2).click(); // the third div
 
     $x("//h1/div").click();
     $(byXpath("//h1/div")).click();
 
-    $(byText("full text")).click();
-    $(withText("ull tex")).click();
+    $(byText("full text")).click(); //ищет по целому тексту
+    $(withText("ull tex")).click(); //ищет по куску текста
 
-    $(byTagAndText("div", "full text"));
+    $(byTagAndText("div", "full text")); // ищет по тегу и текстом например див такой-от текст такой-то
     $(withTagAndText("div", "ull text"));
 
     $("").parent();
-    $("").sibling(1);
-    $("").preceding(1);
-    $("").closest("div");
+    $("").sibling(1); //вниз по одной ветке (сестры) в скобках идекс
+    $("").preceding(1); // вверх
+    $("").closest("div"); // ищет вверх по дереву ближайший див
     $("").ancestor("div"); // the same as closest
     $("div:last-child");
 
@@ -83,17 +84,19 @@ public class Snippets {
   void actions_examples() {
     $("").click();
     $("").doubleClick();
-    $("").contextClick();
+    $("").contextClick(); //правая кнопка мыши
 
-    $("").hover();
-
+    $("").hover(); //поднести мышку и не нажимать (всплывающее окно)
+    
+    
+  //команды с клавиатуры
     $("").setValue("text");
-    $("").append("text");
-    $("").clear();
+    $("").append("text");// добавить текст (сначала setValue затем append)
+    $("").clear(); 
     $("").setValue(""); // clear
 
     $("div").sendKeys("c"); // hotkey c on element
-    actions().sendKeys("c").perform(); //hotkey c on whole application
+    actions().sendKeys("c").perform(); //находимся в окне и нажимаем горячую клавишу 
     actions().sendKeys(Keys.chord(Keys.CONTROL, "f")).perform(); // Ctrl + F
     $("html").sendKeys(Keys.chord(Keys.CONTROL, "f"));
 
@@ -103,9 +106,9 @@ public class Snippets {
 
 
     // complex actions with keybord and mouse, example
-    actions().moveToElement($("div")).clickAndHold().moveByOffset(300, 200).release().perform();
+    actions().moveToElement($("div")).clickAndHold().moveByOffset(300, 200).release().perform(); //типичный драг анд дроп
 
-    // old html actions don't work with many modern frameworks
+    // old html actions don't work with many modern frameworks Выбор у элементов dropDown и radioBox
     $("").selectOption("dropdown_option");
     $("").selectRadio("radio_options");
 
@@ -118,27 +121,28 @@ public class Snippets {
     $("").shouldNotHave(text("abc"));
     $("").should(appear);
     $("").shouldNot(appear);
+    $$( cssSelector: "sdfsdf") .findBy ( condition: visible) .shouldHave ( ...condition: text ( text: "abc"));//если есть 2 одинаковых элемента и один из них невидимый
 
 
-    //longer timeouts
+    //longer timeouts задержка в каком-то конкретном месте нужно подождть (медленный стенд)
     $("").shouldBe(visible, Duration.ofSeconds(30));
 
   }
 
   void conditions_examples() {
-    $("").shouldBe(visible);
-    $("").shouldBe(hidden);
+    $("").shouldBe(visible); // что-то появилось  
+    $("").shouldBe(hidden); // что-то исчезло
 
-    $("").shouldHave(text("abc"));
+    $("").shouldHave(text("abc")); //есть текст
     $("").shouldHave(exactText("abc"));
     $("").shouldHave(textCaseSensitive("abc"));
     $("").shouldHave(exactTextCaseSensitive("abc"));
     $("").should(matchText("[0-9]abc$"));
 
-    $("").shouldHave(cssClass("red"));
-    $("").shouldHave(cssValue("font-size", "12"));
+    $("").shouldHave(cssClass("red")); //проверяет что таокой класс есть 
+    $("").shouldHave(cssValue("font-size", "12")); //или цвет 
 
-    $("").shouldHave(value("25"));
+    $("").shouldHave(value("25")); //проверка что в инпут боксе отображается такой текст т.е. если инпут то не shouldHave(text) а shouldHave(value)
     $("").shouldHave(exactValue("25"));
     $("").shouldBe(empty);
 
@@ -146,10 +150,10 @@ public class Snippets {
     $("").shouldHave(attribute("name", "example"));
     $("").shouldHave(attributeMatching("name", "[0-9]abc$"));
 
-    $("").shouldBe(checked); // for checkboxes
+    $("").shouldBe(checked); // for checkboxes проверка что чекбокс выбран
 
     // Warning! Only checks if it is in DOM, not if it is visible! You don't need it in most tests!
-    $("").should(exist);
+    $("").should(exist); //проверяет что элемнт есть в ДОМЕ но не тоже самое что ВИДИМЫЙ!
 
     // Warning! Checks only the "disabled" attribute! Will not work with many modern frameworks
     $("").shouldBe(disabled);
@@ -195,9 +199,10 @@ public class Snippets {
   }
 
   void file_operation_examples() throws FileNotFoundException {
-
+    
+//скачивание файлов
     File file1 = $("a.fileLink").download(); // only for <a href=".."> links
-    File file2 = $("div").download(DownloadOptions.using(FileDownloadMode.FOLDER)); // more common options, but may have problems with Grid/Selenoid
+    File file2 = $("div").download(DownloadOptions.using(FileDownloadMode.FOLDER)); //основной способ скачать файл more common options, but may have problems with Grid/Selenoid
 
     File file = new File("src/test/resources/readme.txt");
     $("#file-upload").uploadFile(file);
